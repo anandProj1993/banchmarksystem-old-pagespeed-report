@@ -125,5 +125,57 @@ Defaulting to \`null\`.`),null)}function Eb(e){return wb(e)&&!Number.isNaN(e)&&e
   // document.title = __unlighthouse_data.options.host.replace(/https?:\/\/(www.)?/, '') + ' | Unlighthouse'
 })()
 </script>
+
+<script>
+(function(){
+  const LOGO_URL = 'https://www.benchmarksystems.com/wp-content/themes/accel434/assets/images/logo.png';
+
+  function replaceFavicons(){
+    try{ document.querySelectorAll('link[rel~="icon"]').forEach(l=>{ l.href = LOGO_URL; l.type='image/png'; }); }catch(e){}
+  }
+
+  function fixImages(){
+    document.querySelectorAll('img').forEach(img=>{
+      try{
+        const src = img.getAttribute('src') || '';
+        if(/unlighthouse|logo|favicon|lighthouse/i.test(src) || src.trim()===''){
+          img.src = LOGO_URL;
+        }
+        img.onerror = function(){
+          try{ img.onerror = null; img.src = '/unlighthouse-benchmarksystems-202608090002/reports/screenshot.jpeg'; }
+          catch(e){ img.src = LOGO_URL; }
+        };
+      }catch(e){}
+    });
+  }
+
+  function disableExternalAndDocs(){
+    const host = location.hostname;
+    document.querySelectorAll('a').forEach(a=>{
+      try{
+        const href = a.getAttribute('href');
+        if(!href) return;
+        const lhref = href.toLowerCase();
+        if(/^https?:\/\//.test(href) && !href.includes(host)){
+          a.removeAttribute('href');
+          a.style.pointerEvents='none';
+          a.style.cursor='default';
+        }
+        if(/\.json$/.test(lhref) || /payload\.html$/.test(lhref) || /payload\.js$/.test(lhref) || /\.pdf$/.test(lhref)){
+          a.removeAttribute('href');
+          a.style.pointerEvents='none';
+          a.style.cursor='default';
+        }
+      }catch(e){}
+    });
+  }
+
+  function runAll(){ replaceFavicons(); fixImages(); disableExternalAndDocs(); }
+  const mo = new MutationObserver(runAll);
+  mo.observe(document.documentElement || document.body, { childList:true, subtree:true, attributes:true, attributeFilter:['src','href'] });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', runAll); else runAll();
+})();
+</script>
+
 </body>
 </html>
