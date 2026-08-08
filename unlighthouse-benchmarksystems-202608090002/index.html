@@ -17,44 +17,14 @@
         href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=DM+Serif+Display:ital@0;1&display=swap">
   <title>Benchmark Systems — Performance Report</title>
 
-  <!-- Inline script: replace Unlighthouse branding/logo and disable all navigation links so the page is a whitelisted, single-view report -->
+  <!-- Inline script: replace Unlighthouse branding/logo but KEEP interactivity -->
   <script>
     (function(){
       const LOGO_URL = 'https://www.benchmarksystems.com/wp-content/themes/accel434/assets/images/logo.png';
-
-      // Replace any existing favicon links (if present)
       try{
         document.querySelectorAll('link[rel~="icon"]').forEach(l=>{ l.href = LOGO_URL; l.type='image/png'; });
       }catch(e){}
-
-      // Prevent navigation: remove hrefs and disable pointer events on anchors
-      function disableLinks(){
-        document.querySelectorAll('a').forEach(a=>{
-          try{ a.removeAttribute('href'); }catch(e){}
-          a.style.pointerEvents = 'none';
-          a.style.cursor = 'default';
-        });
-      }
-
-      // Replace images named like 'logo' with the provided logo
-      function replaceLogos(){
-        document.querySelectorAll('img').forEach(img=>{
-          try{
-            if(img.src && /logo/i.test(img.src)) img.src = LOGO_URL;
-          }catch(e){}
-        });
-      }
-
-      // Observe DOM changes so dynamically injected logos/links are handled
-      const observer = new MutationObserver(()=>{ replaceLogos(); disableLinks(); });
-      observer.observe(document.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['src','href'] });
-
-      // Global click preventer to be extra-safe
-      document.addEventListener('click', e=>{ const a = e.target.closest && e.target.closest('a'); if(a) e.preventDefault(); }, true);
-
-      // Run immediately too
-      if(document.readyState === 'complete' || document.readyState === 'interactive'){ replaceLogos(); disableLinks(); }
-      else document.addEventListener('DOMContentLoaded', ()=>{ replaceLogos(); disableLinks(); });
+      try{ document.querySelectorAll('img').forEach(img=>{ if(img.src and 'logo' in img.src.lower()) img.src = LOGO_URL }); }catch(e){}
     })();
   </script>
 
